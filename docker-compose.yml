@@ -1,0 +1,74 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: nestjs-app
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DATABASE_URL=postgres://postgres:postgres@db:5432/nestjsdb
+  #     - PORT=3000
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - backend
+  #   restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: nestjs-postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nestjsdb
+      - PGUSER=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "log_statement=all"]
+    restart: unless-stopped
+
+  adminer:
+    image: adminer
+    container_name: nestjs-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+    name: express-postgres-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+
+volumes:
+  postgres_data:
+    name: postgres-data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/postgres
