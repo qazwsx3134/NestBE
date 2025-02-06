@@ -5,7 +5,7 @@ export default defineConfig({
   schema: './src/drizzle/schema/**.schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL, //postgres://user:password@host:port/db
     ssl: {
       rejectUnauthorized: false,
     },

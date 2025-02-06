@@ -5,6 +5,8 @@ import { PropertyModule } from './property/property.module';
 import { DrizzleModule } from './drizzle/drizzle.module';
 import { PostModule } from './post/post.module';
 import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { ConfigModule } from '@nestjs/config';
     DrizzleModule,
     PostModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
