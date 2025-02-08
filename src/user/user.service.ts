@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DrizzleAsyncProvider } from 'src/drizzle/drizzle.provider';
 import { DrizzleDB } from 'src/drizzle/types/drizzle';
 import { users } from 'src/drizzle/schema/users.schema';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class UserService {
@@ -35,7 +36,14 @@ export class UserService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.db
+      .select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      })
+      .from(users)
+      .where(eq(users.id, id));
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

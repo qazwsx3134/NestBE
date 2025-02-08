@@ -21,6 +21,8 @@ export class AuthController {
     /**
      * req.user is the user that passport authenticated, passed by local.strategy
      */
-    return req.user;
+    const token = await this.authService.login(req.user.id);
+
+    return { id: req.user, token };
   }
 }
