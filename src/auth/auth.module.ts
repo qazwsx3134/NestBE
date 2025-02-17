@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import refreshJwtConfig from './config/refresh-jwt.config';
 
 @Module({
   controllers: [AuthController],
@@ -16,6 +17,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     DrizzleModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(refreshJwtConfig),
   ],
 })
 export class AuthModule {}

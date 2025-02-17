@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { el } from '@faker-js/faker/.';
 
 @Controller('auth')
 export class AuthController {
@@ -21,8 +20,6 @@ export class AuthController {
     /**
      * req.user is the user that passport authenticated, passed by local.strategy
      */
-    const token = await this.authService.login(req.user.id);
-
-    return { id: req.user, token };
+    return await this.authService.login(req.user.id);
   }
 }
