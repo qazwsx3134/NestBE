@@ -42,4 +42,15 @@ export class AuthService {
       refreshToken,
     };
   }
+
+  async refreshToken(userId: number) {
+    const payload: AuthJwtPayload = {
+      sub: userId,
+    };
+    const token = await this.jwtService.sign(payload);
+    return {
+      id: userId,
+      token,
+    };
+  }
 }
