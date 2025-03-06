@@ -47,11 +47,13 @@ export const userAuth = pgTable('user_auth', {
   userId: integer('user_id')
     .references(() => users.id)
     .notNull(),
+  deviceId: text('device_id'),
   // refresh token 的長度可能會隨認證方式改變，使用 TEXT 更有彈性
   refreshToken: text('refresh_token'),
   lastLogin: timestamp('last_login'),
   failedAttempts: integer('failed_attempts').default(0),
   lockedUntil: timestamp('locked_until'),
+  expiredAt: timestamp('expired_at').notNull(),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({

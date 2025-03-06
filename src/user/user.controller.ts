@@ -22,7 +22,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard) // 加了這行之後 jwtStrategy 會先在header token validate
   @Get('profile')
   getProfile(@Req() req) {
-    return this.userService.findOne(req.user.id);
+    return this.userService.userAuthFindOne(req.user.id);
   }
 
   @Post()

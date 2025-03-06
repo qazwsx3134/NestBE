@@ -4,6 +4,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthJwtPayload } from '../types/auth-jwtPayload';
 import { Inject, Injectable } from '@nestjs/common';
 import refreshJwtConfig from '../config/refresh-jwt.config';
+import { Request } from 'express';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class RefreshJwtStrategy extends PassportStrategy(
@@ -13,22 +15,25 @@ export class RefreshJwtStrategy extends PassportStrategy(
   constructor(
     @Inject(refreshJwtConfig.KEY)
     private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
+    private authService: AuthService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Tell passport to get the token from the header
       secretOrKey: refreshJwtConfiguration.secret,
       ignoreExpiration: false,
+      passReqToCallback: true, // 需要把req傳進來
     });
   }
   // 有AuthGuard("jwt")包著的路由才會觸發這個strategy
   // 會先驗證token 驗證完後會trigger validate
 
-  validate(payload: AuthJwtPayload) {
-    // payload已經被經過驗證  所以在這邊不需要再經過驗證
+  validate(req: Request, payload: AuthJwtPayload) {
+    const refreshToken = req.get('authorization').replace('Bearer', '').trim();
+
+    console.log(refreshToken);
 
     // return的object會掛在req.user
-    return {
-      id: payload.sub,
-    };
+    const userId = payload.sub;
+    return this.authService.validateRefreshToken(userId, refreshToken);
   }
 }
